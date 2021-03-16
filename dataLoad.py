@@ -17,4 +17,6 @@ class PulsarData:
 'Excess kurtosis of the DM-SNR curve.',
 'Skewness of the DM-SNR curve.',
 'Class'])
+        self.targets = self.data['Class']
+        self.features = self.data.drop(columns='Class')
 
