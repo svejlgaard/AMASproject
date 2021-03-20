@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from sklearn import preprocessing
 import os, contextlib, sys
 # Sets the directory to the current directory
 os.chdir(sys.path[0])
@@ -21,7 +22,12 @@ class PulsarData:
 'Skewness of the DM-SNR curve',
 'Class'])
         self.targets = self.data['Class']
-        self.features = self.data.drop(columns='Class')
+        self.unscaled_features = self.data.drop(columns='Class')
+
+        scaler = preprocessing.MinMaxScaler()
+        self.features = pd.DataFrame(scaler.fit_transform(self.unscaled_features), columns=self.unscaled_features.columns)
+
+
         # Adding a baseline function
         if len(np.unique(self.targets)) == 2:
             zeros = self.targets[self.targets == 0]
