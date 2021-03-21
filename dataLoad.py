@@ -50,4 +50,5 @@ class PulsarData:
             mc_features['Class'] = np.ones(MC_size, dtype=int) * int(i)
             MC_list.append(mc_features)
         self.MC_data = pd.concat(MC_list).sample(frac=1).reset_index(drop=True)
+        return self.MC_data
 
