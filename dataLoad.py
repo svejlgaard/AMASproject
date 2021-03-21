@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn import preprocessing
 import os, contextlib, sys
+from scipy import stats
 # Sets the directory to the current directory
 os.chdir(sys.path[0])
 
@@ -36,4 +37,17 @@ class PulsarData:
             len_ones = len(ones) / len(self.targets)
             self.baseline = len_zeros
             #print(f'The data set contains {len_zeros*100:.1f} % pulsars of class 0 and {len_ones*100:.1f} % pulsars of class 1')
+        
+    def MonteCarlo(self, MC_size):
+        MC_list = list()
+        for i in range(2):
+            features = self.unscaled_features[self.targets == i]
+            features = features.reset_index(drop=True)
+            means = np.mean(features, axis=0)
+            cov_matrix = features.corr()
+            mc_features = stats.multivariate_normal(mean=means, cov=cov_matrix).rvs(MC_size, random_state=27)
+            mc_features = pd.DataFrame(data=mc_features, columns = features.columns)
+            mc_features['Class'] = np.ones(MC_size, dtype=int) * int(i)
+            MC_list.append(mc_features)
+        self.MC_data = pd.concat(MC_list).sample(frac=1).reset_index(drop=True)
 
