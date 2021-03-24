@@ -51,4 +51,3 @@ class PulsarData:
             MC_list.append(mc_features)
         self.MC_data = pd.concat(MC_list).sample(frac=1).reset_index(drop=True)
         return self.MC_data
-
